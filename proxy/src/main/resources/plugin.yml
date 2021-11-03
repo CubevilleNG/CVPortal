@@ -1,5 +1,5 @@
 name: CVPortal
 main: org.cubeville.cvportal.CVPortal
 version: 0.2
-author: FrediW
+author: FrediW,ToeMan_
 depends: ['CVIPC']
