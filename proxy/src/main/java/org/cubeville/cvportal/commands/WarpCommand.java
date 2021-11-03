@@ -1,8 +1,6 @@
 package org.cubeville.cvportal.commands;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -20,7 +18,10 @@ import org.cubeville.cvportal.warps.WarpManager;
 public class WarpCommand extends Command
 {
     private WarpManager warpManager;
-    
+
+    private List<String> warpPrefixes = Arrays.asList("e_", "g_", "q_", "s_");
+    private List<ChatColor> warpPrefixColours = Arrays.asList(ChatColor.YELLOW, ChatColor.DARK_AQUA, ChatColor.GOLD, ChatColor.GREEN, ChatColor.GRAY); // List must contain one extra item with the default colour
+
     public WarpCommand(WarpManager warpManager) {
         super("warp");
         this.warpManager = warpManager;
@@ -90,114 +91,45 @@ public class WarpCommand extends Command
                     return;
                 }
 
-                List<String> warplist = new ArrayList<>();
+                List<List<String>> warplist = new ArrayList<>();
+                for(int prefixNumber = 0; prefixNumber <= warpPrefixes.size(); prefixNumber++) {
+                    warplist.add(new ArrayList<>());
+                }
+
+                int warpCount = 0;
                 for(String warp: warpManager.getWarpNames(server, world)) {
                     if(commandSender.hasPermission("cvportal.warp." + warp)) {
-                        warplist.add(warp);
+                        warpCount++;
+                        boolean found = false;
+                        for(int prefixNumber = 0; prefixNumber < warpPrefixes.size(); prefixNumber++) {
+                            if(warp.startsWith(warpPrefixes.get(prefixNumber))) {
+                                warplist.get(prefixNumber).add(warp);
+                                found = true;
+                                break;
+                            }
+                        }
+                        if(!found) warplist.get(warpPrefixes.size()).add(warp);
                     }
                 }
-                Collections.sort(warplist);
-                if(warplist.size() > 0) {
+
+                if(warpCount > 0) {
                     commandSender.sendMessage(ChatColor.DARK_GREEN + "--------------------" + ChatColor.GREEN + "Warps" + ChatColor.DARK_GREEN + "--------------------");
 
-                    List<TextComponent> eList = new ArrayList<>();
-                    List<TextComponent> gList = new ArrayList<>();
-                    List<TextComponent> qList = new ArrayList<>();
-                    List<TextComponent> sList = new ArrayList<>();
-                    List<TextComponent> mList = new ArrayList<>();
-                    for(String warp: warplist) {
-                        if (warp.startsWith("e_")) {
-                            TextComponent eClickWarp = new TextComponent(warp);
-                            eClickWarp.setColor(ChatColor.YELLOW);
-                            eClickWarp.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/warp " + warp));
-                            eClickWarp.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to warp to " + ChatColor.YELLOW + warp).create()));
-                            eList.add(eClickWarp);
-                        } else if (warp.startsWith("g_")) {
-                            TextComponent gClickWarp = new TextComponent(warp);
-                            gClickWarp.setColor(ChatColor.DARK_AQUA);
-                            gClickWarp.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/warp " + warp));
-                            gClickWarp.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to warp to " + ChatColor.DARK_AQUA + warp).create()));
-                            gList.add(gClickWarp);
-                        } else if (warp.startsWith("q_")) {
-                            TextComponent qClickWarp = new TextComponent(warp);
-                            qClickWarp.setColor(ChatColor.GOLD);
-                            qClickWarp.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/warp " + warp));
-                            qClickWarp.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to warp to " + ChatColor.GOLD + warp).create()));
-                            qList.add(qClickWarp);
-                        } else if (warp.startsWith("s_")) {
-                            TextComponent sClickWarp = new TextComponent(warp);
-                            sClickWarp.setColor(ChatColor.GREEN);
-                            sClickWarp.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/warp " + warp));
-                            sClickWarp.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to warp to " + ChatColor.GREEN + warp).create()));
-                            sList.add(sClickWarp);
-                        } else {
-                            TextComponent mClickWarp = new TextComponent(warp);
-                            mClickWarp.setColor(ChatColor.GRAY);
-                            mClickWarp.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/warp " + warp));
-                            mClickWarp.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to warp to " + ChatColor.GRAY + warp).create()));
-                            mList.add(mClickWarp);
+                    for(int prefixNumber = 0; prefixNumber <= warpPrefixes.size(); prefixNumber++) {
+                        TextComponent out = new TextComponent(" ");
+                        for(int warpNumber = 0; warpNumber < warplist.get(prefixNumber).size(); warpNumber++) {
+                            if(warpNumber > 0)
+                                out.addExtra(new TextComponent(ChatColor.DARK_GREEN + " - "));
+                                Collections.sort(warplist.get(prefixNumber));
+                            String warp = warplist.get(prefixNumber).get(warpNumber);
+                            TextComponent w = new TextComponent(warp);
+                            w.setColor(warpPrefixColours.get(prefixNumber));
+                            w.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/warp " + warp));
+                            w.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to warp to " + warpPrefixColours.get(prefixNumber) + warp).create()));
+                            out.addExtra(w);
                         }
+                        commandSender.sendMessage(out);
                     }
-                    int e = 0;
-                    TextComponent eWarps = new TextComponent(" ");
-                    for(TextComponent warp: eList) {
-                        if(e > 0) {
-                            eWarps.addExtra(new TextComponent(ChatColor.DARK_GREEN + " - "));
-                            eWarps.addExtra(warp);
-                        } else {
-                            eWarps.addExtra(warp);
-                            e++;
-                        }
-                    }
-                    commandSender.sendMessage(eWarps);
-                    int g = 0;
-                    TextComponent gWarps = new TextComponent(" ");
-                    for(TextComponent warp: gList) {
-                        if(g > 0) {
-                            gWarps.addExtra(new TextComponent(ChatColor.DARK_GREEN + " - "));
-                            gWarps.addExtra(warp);
-                        } else {
-                            gWarps.addExtra(warp);
-                            g++;
-                        }
-                    }
-                    commandSender.sendMessage(gWarps);
-                    int q = 0;
-                    TextComponent qWarps = new TextComponent(" ");
-                    for(TextComponent warp: qList) {
-                        if(q > 0) {
-                            qWarps.addExtra(new TextComponent(ChatColor.DARK_GREEN + " - "));
-                            qWarps.addExtra(warp);
-                        } else {
-                            qWarps.addExtra(warp);
-                            q++;
-                        }
-                    }
-                    commandSender.sendMessage(qWarps);
-                    int s = 0;
-                    TextComponent sWarps = new TextComponent(" ");
-                    for(TextComponent warp: sList) {
-                        if(s > 0) {
-                            sWarps.addExtra(new TextComponent(ChatColor.DARK_GREEN + " - "));
-                            sWarps.addExtra(warp);
-                        } else {
-                            sWarps.addExtra(warp);
-                            s++;
-                        }
-                    }
-                    commandSender.sendMessage(sWarps);
-                    int m = 0;
-                    TextComponent mWarps = new TextComponent(" ");
-                    for(TextComponent warp: mList) {
-                        if(m > 0) {
-                            mWarps.addExtra(new TextComponent(ChatColor.DARK_GREEN + " - "));
-                            mWarps.addExtra(warp);
-                        } else {
-                            mWarps.addExtra(warp);
-                            m++;
-                        }
-                    }
-                    commandSender.sendMessage(mWarps);
                 }
                 else {
                     commandSender.sendMessage("§cNo warps found.");
@@ -216,7 +148,7 @@ public class WarpCommand extends Command
             warpManager.teleport(player, target);
             return;
         }
-        
+
         if(args.length != 1) {
             commandSender.sendMessage("§c/warp <target>");
             return;
