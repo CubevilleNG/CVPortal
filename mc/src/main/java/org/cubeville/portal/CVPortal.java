@@ -1,7 +1,5 @@
 package org.cubeville.portal;
 
-import org.betonquest.betonquest.BetonQuest;
-import org.betonquest.betonquest.id.ConditionID;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -25,10 +23,9 @@ public class CVPortal extends JavaPlugin {
     private CommandParser setwarpCommandParser;
     private LoginTeleporter loginTeleporter;
 
-    private BetonQuest betonQuest;
-    
     private CVIPC cvipc;
-
+    private BQWrapper betonQuestWrapper;
+    
     private static CVPortal instance;
     public static CVPortal getInstance() {
         return instance;
@@ -134,7 +131,7 @@ public class CVPortal extends JavaPlugin {
         setwarpCommandParser = new CommandParser();
         setwarpCommandParser.addCommand(new Setwarp());
 
-        betonQuest = (BetonQuest) pm.getPlugin("BetonQuest");
+        betonQuestWrapper = new BQWrapper(pm);
     }
 
     public void onDisable() {
@@ -160,12 +157,6 @@ public class CVPortal extends JavaPlugin {
     }
 
     public boolean conditionIsTrue(Player player, String condition) {
-        if(betonQuest == null) return false;
-        try {
-            return betonQuest.condition(player.getUniqueId().toString(), new ConditionID(null, condition));
-        }
-        catch(Exception e) {
-            return false;
-        }
+        return betonQuestWrapper.conditionIsTrue(player, condition);
     }
 }

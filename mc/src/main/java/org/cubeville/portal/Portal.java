@@ -50,7 +50,7 @@ public class Portal implements ConfigurationSerializable
     private List<Action> actions;
 
     private Random random = new Random();
-    
+
     public Portal(String name, World world, Vector minCorner, Vector maxCorner) {
         this.name = name;
         this.minCorner = minCorner;

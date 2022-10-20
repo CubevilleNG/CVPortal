@@ -60,7 +60,7 @@ public class PortalManager implements Listener, DynamicallyEnumeratedObjectSourc
     
     public void start() {
         if(taskId != null) plugin.getServer().getScheduler().cancelTask(taskId);
-        
+
         Runnable runnable = new Runnable() {
                 @SuppressWarnings("unchecked")
                 public void run() {
@@ -172,25 +172,24 @@ public class PortalManager implements Listener, DynamicallyEnumeratedObjectSourc
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
+
         Player player = event.getEntity();
+
         for(Portal portal: portals) {
             if (!portal.isPlayerInPortal(player)) continue;
 	    if (!portal.conditionIsTrue(player)) continue;
 	    
             if(portal.isDeathTriggered()) {
-                System.out.println("Portal is a death triggered portal, saving player status");
-                respawnPortals.put(player.getUniqueId(), portal);
-                return;
+                if(respawnPortals.containsKey(player.getUniqueId()) == false) {
+                    respawnPortals.put(player.getUniqueId(), portal);
+                }
             }
 
             if(portal.isKeepInventory()) {
-                System.out.println("Portal is keeping player's inventory");
-                // keep the player's inventory
                 event.setKeepInventory(true);
                 event.setKeepLevel(true);
                 event.getDrops().clear();
                 event.setDroppedExp(0);
-                return;
             }
         }
     }
