@@ -42,6 +42,7 @@ public class CVPortal extends JavaPlugin {
         ConfigurationSerialization.registerClass(Cmd.class);
         ConfigurationSerialization.registerClass(CrossServerTeleport.class);
         ConfigurationSerialization.registerClass(Extinguish.class);
+        ConfigurationSerialization.registerClass(GameMode.class);
         ConfigurationSerialization.registerClass(Heal.class);
         ConfigurationSerialization.registerClass(Message.class);
         ConfigurationSerialization.registerClass(Playsound.class);
@@ -93,6 +94,7 @@ public class CVPortal extends JavaPlugin {
         commandParser.addCommand(new PortalSetCooldown());
         commandParser.addCommand(new PortalSetCrossServerTeleport());
         commandParser.addCommand(new PortalSetDeathTriggered());
+        commandParser.addCommand(new PortalSetGameMode());
         commandParser.addCommand(new PortalSetLoginTriggered());
         commandParser.addCommand(new PortalSetKeepInventory());
         commandParser.addCommand(new PortalSetMessage());
@@ -120,7 +122,7 @@ public class CVPortal extends JavaPlugin {
         commandParser.addCommand(new PortalRemoveAction("remove sucommand", "SuCmd"));
         commandParser.addCommand(new PortalRemoveAction("remove teleport", "Teleport"));
         commandParser.addCommand(new PortalRemoveAction("remove title", "Title"));
-
+        commandParser.addCommand(new PortalUnsetParticle());
         
         tpposCommandParser = new CommandParser();
         tpposCommandParser.addCommand(new Tppos());
