@@ -1,5 +1,9 @@
 package org.cubeville.portal;
 
+import org.betonquest.betonquest.BetonQuest;
+import org.betonquest.betonquest.exceptions.ObjectNotFoundException;
+import org.betonquest.betonquest.id.ConditionID;
+import org.betonquest.betonquest.utils.PlayerConverter;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -24,7 +28,7 @@ public class CVPortal extends JavaPlugin {
     private LoginTeleporter loginTeleporter;
 
     private CVIPC cvipc;
-    private BQWrapper betonQuestWrapper;
+    //private BQWrapper betonQuestWrapper;
     
     private static CVPortal instance;
     public static CVPortal getInstance() {
@@ -133,7 +137,7 @@ public class CVPortal extends JavaPlugin {
         setwarpCommandParser = new CommandParser();
         setwarpCommandParser.addCommand(new Setwarp());
 
-        betonQuestWrapper = new BQWrapper(pm);
+        //betonQuestWrapper = new BQWrapper(pm);
     }
 
     public void onDisable() {
@@ -159,6 +163,12 @@ public class CVPortal extends JavaPlugin {
     }
 
     public boolean conditionIsTrue(Player player, String condition) {
-        return betonQuestWrapper.conditionIsTrue(player, condition);
+        //return betonQuestWrapper.conditionIsTrue(player, condition);
+        try {
+            return BetonQuest.condition(PlayerConverter.getID(player), new ConditionID(null, condition));
+        } catch(ObjectNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
