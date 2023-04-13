@@ -1,11 +1,11 @@
 name: CVPortal
 main: org.cubeville.portal.CVPortal
 author: FrediW
-version: 1.18
+version: 1.19
 api-version: 1.16
 
 depend: [CVTools]
-softdepend: [BetonQuest,CVIPC]
+softdepend: [BetonQuest,CVIPC,Multiverse-Core]
 
 commands:
   cvportal:

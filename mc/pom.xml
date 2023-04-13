@@ -4,7 +4,7 @@
   <groupId>org.cubeville</groupId>
   <artifactId>CVPortal</artifactId>
   <packaging>jar</packaging>
-  <version>1.18</version>
+  <version>1.19</version>
   <name>CVPortal</name>
   <url>http://maven.apache.org</url>
   <properties>
@@ -14,7 +14,7 @@
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>
-      <version>1.18-R0.1-SNAPSHOT</version>
+      <version>1.19-R0.1-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -34,7 +34,13 @@
     <dependency>
       <groupId>io.papermc.paper</groupId>
       <artifactId>paper-api</artifactId>
-      <version>1.18.2-R0.1-SNAPSHOT</version>
+      <version>1.19.3-R0.1-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.betonquest</groupId>
+      <artifactId>betonquest</artifactId>
+      <version>2.0.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
@@ -59,6 +65,10 @@
     <repository>
       <id>papermc</id>
       <url>https://papermc.io/repo/repository/maven-public/</url>
+    </repository>
+    <repository>
+      <id>betonquest-repo</id>
+      <url>https://betonquest.org/nexus/repository/betonquest/</url>
     </repository>
   </repositories>
 </project>
