@@ -19,6 +19,7 @@ public class PortalUnsetParticle extends BaseCommand
     public PortalUnsetParticle() {
         super("unset particle");
         addBaseParameter(new CommandParameterPortal());
+        addFlag("silent");
     }
 
     public CommandResponse execute(CommandSender sender, Set<String> flags, Map<String, Object> parameters, List<Object> baseParameters)
@@ -28,6 +29,9 @@ public class PortalUnsetParticle extends BaseCommand
         portal.setParticle(null, 0);
         PortalManager.getInstance().save();
 
-        return new CommandResponse("&aParticle unset.");
+        if(flags.contains("silent"))
+            return new CommandResponse("");
+        else
+            return new CommandResponse("&aParticle unset.");
     }
 }

@@ -34,6 +34,8 @@ public class PortalTrigger extends BaseCommand
         addFlag("search");
         addFlag("limit");
         addParameter("default", true, new CommandParameterString());
+
+        addFlag("silent");
     }
 
     @SuppressWarnings("unchecked")
@@ -107,6 +109,9 @@ public class PortalTrigger extends BaseCommand
             }
         }
 
-        return new CommandResponse("&aPortal triggered.");
+        if(flags.contains("silent"))
+            return new CommandResponse("");
+        else
+            return new CommandResponse("&aPortal triggered.");
     }
 }

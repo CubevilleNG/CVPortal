@@ -23,6 +23,7 @@ public class PortalSetParticle extends BaseCommand
         addBaseParameter(new CommandParameterPortal());
         addBaseParameter(new CommandParameterEnum(Particle.class));
         addBaseParameter(new CommandParameterInteger());
+        addFlag("silent");
     }
 
     public CommandResponse execute(CommandSender sender, Set<String> flags, Map<String, Object> parameters, List<Object> baseParameters)
@@ -33,6 +34,9 @@ public class PortalSetParticle extends BaseCommand
         portal.setParticle(particle, (Integer) baseParameters.get(2));
         PortalManager.getInstance().save();
 
-        return new CommandResponse("&aParticle set.");
+        if(flags.contains("silent"))
+            return new CommandResponse("");
+        else
+            return new CommandResponse("&aParticle set.");
     }
 }
