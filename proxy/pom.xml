@@ -6,25 +6,31 @@
   
   <groupId>org.cubeville.proxy</groupId>
   <artifactId>CVPortal</artifactId>
-  <version>1.18</version>
+  <version>1.20</version>
 
   <dependencies>
     <dependency>
       <groupId>net.md-5</groupId>
       <artifactId>bungeecord-api</artifactId>
-      <version>1.18-R0.1-SNAPSHOT</version>
+      <version>1.20-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>net.md-5</groupId>
       <artifactId>bungeecord-config</artifactId>
-      <version>1.18-R0.1-SNAPSHOT</version>
+      <version>1.20-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.cubeville.proxy</groupId>
       <artifactId>CVIPC</artifactId>
       <version>1.18</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.cubeville.proxy</groupId>
+      <artifactId>CVPlayerData</artifactId>
+      <version>1.20</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
@@ -49,5 +55,9 @@
       </plugin>
     </plugins>
   </build>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
   
 </project>

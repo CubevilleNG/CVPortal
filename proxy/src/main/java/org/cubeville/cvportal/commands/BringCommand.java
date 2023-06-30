@@ -6,14 +6,17 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
 import org.cubeville.cvipc.CVIPC;
+import org.cubeville.cvplayerdata.playerdata.PlayerDataManager;
 
 public class BringCommand extends Command
 {
     CVIPC ipc;
+    PlayerDataManager pdm;
     
-    public BringCommand(CVIPC ipc) {
-        super("bring", "cvportal.tp.other");
+    public BringCommand(CVIPC ipc, PlayerDataManager pdm) {
+        super("bring", "cvportal.bring");
         this.ipc = ipc;
+        this.pdm = pdm;
     }
 
     public void execute(CommandSender commandSender, String[] args) {
@@ -26,7 +29,7 @@ public class BringCommand extends Command
         }
 
         String playerName = args[0];
-        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(playerName);
+        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(pdm.getPlayerByVisibleName(playerName));
         
         if(player == null) {
             sender.sendMessage("§cPlayer not found.");
