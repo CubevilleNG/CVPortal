@@ -3,9 +3,7 @@ package org.cubeville.cvportal;
 import java.io.File;
 import java.io.IOException;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import net.md_5.bungee.api.ChatColor;
@@ -31,12 +29,14 @@ public class CVPortal extends Plugin
 {
     public Map<UUID, UUID> pendingTeleports;
     public Map<UUID, Integer> scheduledTasks;
+    public Map<UUID, Set<UUID>> tpExceptions;
 
     public TaskScheduler taskScheduler;
 
     public void onEnable() {
         this.pendingTeleports = new HashMap<>();
         this.scheduledTasks = new HashMap<>();
+        this.tpExceptions = new HashMap<>();
         this.taskScheduler = getProxy().getScheduler();
         PluginManager pm = getProxy().getPluginManager();
         CVIPC ipc = (CVIPC) pm.getPlugin("CVIPC");
@@ -45,6 +45,7 @@ public class CVPortal extends Plugin
         pm.registerCommand(this, new BringCommand(ipc, pdm));
         pm.registerCommand(this, new AcceptCommand(this, ipc));
         pm.registerCommand(this, new DenyCommand(this));
+        pm.registerCommand(this, new ReloadExceptionsCommand(this));
 
         File configFile = new File(getDataFolder(), "config.yml");
         try {
@@ -54,6 +55,18 @@ public class CVPortal extends Plugin
             Map<String, String> warpCommands = warpManager.getWarpCommands();
             for(String command: warpCommands.keySet()) {
                 pm.registerCommand(this, new WarpAliasCommand(warpManager, command, warpCommands.get(command)));
+            }
+
+            Configuration tpExceptions = (Configuration) config.get("tp-exceptions");
+            for(String tpException : tpExceptions.getKeys()) {
+                Set<UUID> list = new HashSet<>();
+                for(String uuid : tpExceptions.getStringList(tpException)) {
+                    try { list.add(UUID.fromString(uuid)); } catch(IllegalArgumentException ignored) {}
+                }
+                try {
+                    UUID uuid = UUID.fromString(tpException);
+                    this.tpExceptions.put(uuid, list);
+                } catch(IllegalArgumentException ignored) {}
             }
         }
         catch(IOException e) {
@@ -116,5 +129,13 @@ public class CVPortal extends Plugin
         } else {
             return this.pendingTeleports.containsValue(player);
         }
+    }
+
+    public Map<UUID, Set<UUID>> getTpExceptions() {
+        return this.tpExceptions;
+    }
+
+    public void setTpExceptions(Map<UUID, Set<UUID>> tpExceptions) {
+        this.tpExceptions = tpExceptions;
     }
 }

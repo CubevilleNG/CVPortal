@@ -14,6 +14,10 @@ import org.cubeville.cvipc.CVIPC;
 import org.cubeville.cvplayerdata.playerdata.PlayerDataManager;
 import org.cubeville.cvportal.CVPortal;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
 public class TpCommand extends Command
 {
     CVPortal plugin;
@@ -54,15 +58,8 @@ public class TpCommand extends Command
                     return;
                 }
 
-                if(player.hasPermission("cvportal.sa") && !sender.hasPermission("cvportal.tp.sa.unlimited")) {
-                    sendRequest(sender, player);
-                } else if(player.hasPermission("cvportal.admin") && !sender.hasPermission("cvportal.tp.admin.unlimited")) {
-                    sendRequest(sender, player);
-                } else if(player.hasPermission("cvportal.smod") && !sender.hasPermission("cvportal.tp.smod.unlimited")) {
-                    sendRequest(sender, player);
-                } else if(player.hasPermission("cvportal.mod") && !sender.hasPermission("cvportal.tp.mod.unlimited")) {
-                    sendRequest(sender, player);
-                } else {
+                Map<UUID, Set<UUID>> tpExceptions = plugin.getTpExceptions();
+                if(tpExceptions.containsKey(player.getUniqueId()) && tpExceptions.get(player.getUniqueId()).contains(sender.getUniqueId())) {
                     String targetServer = player.getServer().getInfo().getName();
                     String sourceServer = sender.getServer().getInfo().getName();
                     if(sourceServer.equals(targetServer)) {
@@ -71,7 +68,27 @@ public class TpCommand extends Command
                     else {
                         ipc.sendMessage(targetServer, "xwportal|" + sender.getUniqueId() + "|player:" + player.getUniqueId() + "|" + targetServer);
                     }
+                } else {
+                    if(player.hasPermission("cvportal.sa") && !sender.hasPermission("cvportal.tp.sa.unlimited")) {
+                        sendRequest(sender, player);
+                    } else if(player.hasPermission("cvportal.admin") && !sender.hasPermission("cvportal.tp.admin.unlimited")) {
+                        sendRequest(sender, player);
+                    } else if(player.hasPermission("cvportal.smod") && !sender.hasPermission("cvportal.tp.smod.unlimited")) {
+                        sendRequest(sender, player);
+                    } else if(player.hasPermission("cvportal.mod") && !sender.hasPermission("cvportal.tp.mod.unlimited")) {
+                        sendRequest(sender, player);
+                    } else {
+                        String targetServer = player.getServer().getInfo().getName();
+                        String sourceServer = sender.getServer().getInfo().getName();
+                        if(sourceServer.equals(targetServer)) {
+                            ipc.sendMessage(targetServer, "tplocal|" + sender.getUniqueId() + "|player:" + player.getUniqueId());
+                        }
+                        else {
+                            ipc.sendMessage(targetServer, "xwportal|" + sender.getUniqueId() + "|player:" + player.getUniqueId() + "|" + targetServer);
+                        }
+                    }
                 }
+
             }
         }
     }
