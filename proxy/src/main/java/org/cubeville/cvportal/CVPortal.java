@@ -33,6 +33,8 @@ public class CVPortal extends Plugin
 
     public TaskScheduler taskScheduler;
 
+    public WarpManager warpManager;
+
     public void onEnable() {
         this.pendingTeleports = new HashMap<>();
         this.scheduledTasks = new HashMap<>();
@@ -46,27 +48,30 @@ public class CVPortal extends Plugin
         pm.registerCommand(this, new AcceptCommand(this, ipc));
         pm.registerCommand(this, new DenyCommand(this));
         pm.registerCommand(this, new ReloadExceptionsCommand(this));
+        pm.registerCommand(this, new ExceptionsCommand(this, pdm));
 
         File configFile = new File(getDataFolder(), "config.yml");
         try {
             Configuration config = ConfigurationProvider.getProvider(YamlConfiguration.class).load(configFile);
-            WarpManager warpManager = new WarpManager((Configuration) config.get("warps"), configFile, ipc);
+            warpManager = new WarpManager((Configuration) config.get("warps"), configFile, ipc, this);
             pm.registerCommand(this, new WarpCommand(warpManager));
             Map<String, String> warpCommands = warpManager.getWarpCommands();
             for(String command: warpCommands.keySet()) {
                 pm.registerCommand(this, new WarpAliasCommand(warpManager, command, warpCommands.get(command)));
             }
 
-            Configuration tpExceptions = (Configuration) config.get("tp-exceptions");
-            for(String tpException : tpExceptions.getKeys()) {
-                Set<UUID> list = new HashSet<>();
-                for(String uuid : tpExceptions.getStringList(tpException)) {
-                    try { list.add(UUID.fromString(uuid)); } catch(IllegalArgumentException ignored) {}
+            if(config.get("tp-exceptions") != null) {
+                Configuration tpExceptions = (Configuration) config.get("tp-exceptions");
+                for(String tpException : tpExceptions.getKeys()) {
+                    Set<UUID> list = new HashSet<>();
+                    for(String uuid : tpExceptions.getStringList(tpException)) {
+                        try { list.add(UUID.fromString(uuid)); } catch(IllegalArgumentException ignored) {}
+                    }
+                    try {
+                        UUID uuid = UUID.fromString(tpException);
+                        this.tpExceptions.put(uuid, list);
+                    } catch(IllegalArgumentException ignored) {}
                 }
-                try {
-                    UUID uuid = UUID.fromString(tpException);
-                    this.tpExceptions.put(uuid, list);
-                } catch(IllegalArgumentException ignored) {}
             }
         }
         catch(IOException e) {
@@ -137,5 +142,37 @@ public class CVPortal extends Plugin
 
     public void setTpExceptions(Map<UUID, Set<UUID>> tpExceptions) {
         this.tpExceptions = tpExceptions;
+    }
+
+    public void saveTpExceptions() {
+        try {
+            File configFile = new File(getDataFolder(), "config.yml");
+            Configuration allConfig = new Configuration();
+            Configuration tpException = new Configuration();
+            for(UUID uuid : this.tpExceptions.keySet()) {
+                List<String> uuids = new ArrayList<>();
+                for(UUID u : this.tpExceptions.get(uuid)) {
+                    uuids.add(u.toString());
+                }
+                tpException.set(uuid.toString(), uuids);
+            }
+            allConfig.set("tp-exceptions", tpException);
+            allConfig.set("warps", warpManager.getConfig());
+            ConfigurationProvider.getProvider(YamlConfiguration.class).save(allConfig, configFile);
+        } catch(IOException e) {
+            System.out.println("ERROR: Could not save cvportal exceptions configuration");
+        }
+    }
+
+    public Configuration getTpExceptionsConfig() {
+        Configuration tpException = new Configuration();
+        for(UUID uuid : this.tpExceptions.keySet()) {
+            List<String> uuids = new ArrayList<>();
+            for(UUID u : this.tpExceptions.get(uuid)) {
+                uuids.add(u.toString());
+            }
+            tpException.set(uuid.toString(), uuids);
+        }
+        return tpException;
     }
 }

@@ -17,6 +17,7 @@ import net.md_5.bungee.config.YamlConfiguration;
 
 import org.cubeville.cvipc.CVIPC;
 import org.cubeville.cvipc.IPCInterface;
+import org.cubeville.cvportal.CVPortal;
 
 public class WarpManager implements IPCInterface
 {
@@ -24,10 +25,13 @@ public class WarpManager implements IPCInterface
     CVIPC ipc;
     File configFile;
     Configuration config;
+
+    public CVPortal plugin;
     
-    public WarpManager(Configuration config, File configFile, CVIPC ipc) {
+    public WarpManager(Configuration config, File configFile, CVIPC ipc, CVPortal plugin) {
         warps = new HashMap<>();
         this.ipc = ipc;
+        this.plugin = plugin;
         this.config = config;
         this.configFile = configFile;
 
@@ -65,6 +69,10 @@ public class WarpManager implements IPCInterface
         return warps.keySet();
     }
 
+    public Configuration getConfig() {
+        return config;
+    }
+
     public Set<String> getWarpNames(String server, String world) {
         if(server == null || server.equals("")) return getWarpNames();
 
@@ -87,6 +95,7 @@ public class WarpManager implements IPCInterface
     private void save() {
         Configuration cmap = new Configuration();
         cmap.set("warps", config);
+        cmap.set("tp-exceptions", plugin.getTpExceptionsConfig());
         try {
             ConfigurationProvider.getProvider(YamlConfiguration.class).save(cmap, configFile);
         } catch(IOException e) {
