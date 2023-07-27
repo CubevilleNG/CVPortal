@@ -2,7 +2,10 @@ package org.cubeville.cvportal.commands;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import org.cubeville.cvplayerdata.playerdata.PlayerDataManager;
@@ -33,7 +36,12 @@ public class ExceptionsCommand extends Command {
                 if(plugin.getTpExceptions().containsKey(player.getUniqueId())) {
                     for(UUID uuid : plugin.getTpExceptions().get(player.getUniqueId())) {
                         if(pdm.getPlayerName(uuid) != null) {
-                            player.sendMessage(new TextComponent(ChatColor.GOLD + " - " + pdm.getPlayerName(uuid)));
+                            TextComponent out = new TextComponent(ChatColor.GOLD + " - " + pdm.getPlayerName(uuid));
+                            TextComponent click = new TextComponent(" §c(-)");
+                            click.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/exceptions remove  " + pdm.getPlayerName(uuid)));
+                            click.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Remove " + pdm.getPlayerName(uuid))));
+                            out.addExtra(click);
+                            player.sendMessage(out);
                         }
                     }
                 }
