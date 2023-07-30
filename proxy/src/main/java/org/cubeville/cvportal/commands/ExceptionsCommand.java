@@ -38,7 +38,7 @@ public class ExceptionsCommand extends Command {
                         if(pdm.getPlayerName(uuid) != null) {
                             TextComponent out = new TextComponent(ChatColor.GOLD + " - " + pdm.getPlayerName(uuid));
                             TextComponent click = new TextComponent(" §c(-)");
-                            click.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/exceptions remove  " + pdm.getPlayerName(uuid)));
+                            click.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/exceptions remove " + pdm.getPlayerName(uuid)));
                             click.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Remove " + pdm.getPlayerName(uuid))));
                             out.addExtra(click);
                             player.sendMessage(out);
