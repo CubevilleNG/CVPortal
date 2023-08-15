@@ -368,8 +368,8 @@ public class Portal implements ConfigurationSerializable
             ret.add("&6Region: &cregionless");
         }
         else {
-            Vector max = maxCorner.clone().subtract(new Vector(1, 1, 1));
-            String sloc = "&6Region: &a" + minCorner.getX() + "," + minCorner.getY() + "," + minCorner.getZ() + " - " + max.getX() + "," + max.getY() + "," + max.getZ();
+            //Vector max = maxCorner.clone().subtract(new Vector(1, 1, 1));
+            String sloc = "&6Region: &a" + minCorner.getX() + "," + minCorner.getY() + "," + minCorner.getZ() + " - " + maxCorner.getX() + "," + maxCorner.getY() + "," + maxCorner.getZ();
             if(minYaw != maxYaw) {
                 sloc += "; " + minYaw + "-" + maxYaw;
             }

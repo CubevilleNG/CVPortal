@@ -32,7 +32,7 @@ public class PortalSelect extends Command
         Vector max = portal.getMaxCorner().clone();
         if(min == null || max == null) throw new CommandExecutionException("&cPortal is regionless");
         max.subtract(new Vector(1, 1, 1));
-        BlockUtils.setWESelection(player, player.getLocation().getWorld(), min, max);
+        BlockUtils.setWESelection(player, player.getLocation().getWorld(), min, max.clone().add(new Vector(0, 0.1, 0)));
         
         return new CommandResponse("Portal selected.");
     }

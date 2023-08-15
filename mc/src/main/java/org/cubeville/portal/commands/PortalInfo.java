@@ -23,7 +23,6 @@ public class PortalInfo extends Command
         throws CommandExecutionException {
 
         Portal portal = (Portal) baseParameters.get(0);
-        
         CommandResponse ret = new CommandResponse();
         List<String> portalInfo = portal.getLongInfo();
         for(String item: portalInfo) {
