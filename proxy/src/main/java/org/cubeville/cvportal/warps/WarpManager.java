@@ -96,6 +96,7 @@ public class WarpManager implements IPCInterface
         Configuration cmap = new Configuration();
         cmap.set("warps", config);
         cmap.set("tp-exceptions", plugin.getTpExceptionsConfig());
+        cmap.set("server-whitelists", plugin.getServerWhitelistsConfig());
         try {
             ConfigurationProvider.getProvider(YamlConfiguration.class).save(cmap, configFile);
         } catch(IOException e) {
