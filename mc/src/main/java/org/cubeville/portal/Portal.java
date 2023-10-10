@@ -32,6 +32,7 @@ public class Portal implements ConfigurationSerializable
     private boolean keepInventory;
     private boolean loginTriggered;
     private int cooldown;
+    private int globalCooldown;
     private String permission;
     private int minYaw;
     private int maxYaw;
@@ -46,7 +47,8 @@ public class Portal implements ConfigurationSerializable
     private int particleDelayCounter;
     
     private Map<UUID, Long> cooldownTimer = new HashMap<>();
-
+    private Long globalCooldownTimer = 0L;
+    
     private List<Action> actions;
 
     private Random random = new Random();
@@ -57,6 +59,7 @@ public class Portal implements ConfigurationSerializable
         this.maxCorner = maxCorner;
         this.world = world.getUID();
         this.cooldown = 0;
+        this.globalCooldown = 0;
         this.permanent = true;
         this.deathTriggered = false;
         this.keepInventory = false;
@@ -81,7 +84,10 @@ public class Portal implements ConfigurationSerializable
         permanent = (boolean) config.get("permanent");
         actions = (List<Action>) config.get("actions");
         cooldown = (int) config.get("cooldown");
-
+        if(config.get("globalCooldown") != null)
+            globalCooldown = (int) config.get("globalCooldown");
+        else
+            globalCooldown = 0;
         permission = null;
         if(config.get("permission") != null) {
             permission = (String) config.get("permission");
@@ -134,6 +140,7 @@ public class Portal implements ConfigurationSerializable
         ret.put("permanent", permanent);
         ret.put("actions", actions);
         ret.put("cooldown", cooldown);
+        ret.put("globalCooldown", globalCooldown);
         ret.put("deathTriggered", deathTriggered);
         ret.put("keepInventory", keepInventory);
         ret.put("loginTriggered", loginTriggered);
@@ -223,20 +230,26 @@ public class Portal implements ConfigurationSerializable
     
     public boolean trigger(Player player, boolean overrideCooldown) {
         if(isPlayerInPortal(player) && playerHasPermission(player) && conditionIsTrue(player)) {
+            long now = System.currentTimeMillis();
+            
+            if(globalCooldown != 0 && overrideCooldown == false) {
+                if(now - globalCooldownTimer < globalCooldown) return false;
+            }
+            
             if(cooldown == 0 || overrideCooldown) {
+                globalCooldownTimer = now;
                 executeActions(player);
                 return true;
             }
-            else {
-                long now = System.currentTimeMillis();
-                UUID uuid = player.getUniqueId();
-                if(cooldownTimer.containsKey(uuid)) {
-                    if(now - cooldownTimer.get(uuid) < cooldown) return false;
-                }
-                cooldownTimer.put(uuid, now);
-                executeActions(player);
-                return true;
+
+            UUID uuid = player.getUniqueId();
+            if(cooldownTimer.containsKey(uuid)) {
+                if(now - cooldownTimer.get(uuid) < cooldown) return false;
             }
+            cooldownTimer.put(uuid, now);
+            globalCooldownTimer = now;
+            executeActions(player);
+            return true;
         }
         return false;
     }
@@ -390,12 +403,15 @@ public class Portal implements ConfigurationSerializable
         ret.add("&bDeath Triggered: " + (deathTriggered ? "&aEnabled" : "&cDisabled"));
         ret.add("&bLogin Triggered: " + (loginTriggered ? "&aEnabled" : "&cDisabled"));
         ret.add("&bKeep Inventory: " + (keepInventory ? "&aEnabled" : "&cDisabled"));
-        parameter = "&bCooldown Time (seconds): ";
 	if(particle != null) {
 	    ret.add("&bParticles: " + particle + " with delay " + particleDelay);
 	}
+        parameter = "&bCooldown Time (seconds): ";
         if((cooldown / 1000) <= 0) { parameter += "&cNo cooldown"; }
         else { parameter += ("&a" + (cooldown / 1000)); }
+        ret.add(parameter);
+        parameter = "&bGlobal Cooldown Time (seconds): ";
+        if((globalCooldown / 1000) <= 0) { parameter += "&cNo global cooldown"; } else { parameter += ("&a" + (globalCooldown / 1000)); }
         ret.add(parameter);
         ret.add("&6Actions:");
         for(Action action: actions) {
@@ -483,6 +499,10 @@ public class Portal implements ConfigurationSerializable
         this.cooldown = cooldown;
     }
 
+    public void setGlobalCooldown(int globalCooldown) {
+        this.globalCooldown = globalCooldown;
+    }
+    
     public boolean isDeathTriggered() {
         return deathTriggered;
     }

@@ -6,7 +6,6 @@ import org.betonquest.betonquest.id.ConditionID;
 import org.betonquest.betonquest.utils.PlayerConverter;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -100,6 +99,7 @@ public class CVPortal extends JavaPlugin {
         commandParser.addCommand(new PortalSetCrossServerTeleport());
         commandParser.addCommand(new PortalSetDeathTriggered());
         commandParser.addCommand(new PortalSetGameMode());
+        commandParser.addCommand(new PortalSetGlobalCooldown());
         commandParser.addCommand(new PortalSetLoginTriggered());
         commandParser.addCommand(new PortalSetKeepInventory());
         commandParser.addCommand(new PortalSetMessage());
