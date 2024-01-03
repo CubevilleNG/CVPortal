@@ -16,7 +16,6 @@ import net.md_5.bungee.api.event.ServerSwitchEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
-import net.md_5.bungee.api.scheduler.ScheduledTask;
 import net.md_5.bungee.api.scheduler.TaskScheduler;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
@@ -25,7 +24,7 @@ import net.md_5.bungee.config.YamlConfiguration;
 import net.md_5.bungee.event.EventHandler;
 import org.cubeville.cvipc.CVIPC;
 
-import org.cubeville.cvplayerdata.playerdata.PlayerDataManager;
+import org.cubeville.cvplayerdata.PlayerDataManager;
 import org.cubeville.cvportal.commands.*;
 
 import org.cubeville.cvportal.warps.WarpManager;

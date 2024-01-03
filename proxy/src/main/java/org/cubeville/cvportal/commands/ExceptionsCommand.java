@@ -8,7 +8,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
-import org.cubeville.cvplayerdata.playerdata.PlayerDataManager;
+import org.cubeville.cvplayerdata.PlayerDataManager;
 import org.cubeville.cvportal.CVPortal;
 
 import java.util.HashSet;
