@@ -381,8 +381,8 @@ public class Portal implements ConfigurationSerializable
             ret.add("&6Region: &cregionless");
         }
         else {
-            //Vector max = maxCorner.clone().subtract(new Vector(1, 1, 1));
-            String sloc = "&6Region: &a" + minCorner.getX() + "," + minCorner.getY() + "," + minCorner.getZ() + " - " + maxCorner.getX() + "," + maxCorner.getY() + "," + maxCorner.getZ();
+            Vector max = maxCorner.clone().subtract(new Vector(1, 1, 1));
+            String sloc = "&6Region: &a" + minCorner.getX() + "," + minCorner.getY() + "," + minCorner.getZ() + " - " + max.getX() + "," + max.getY() + "," + max.getZ();
             if(minYaw != maxYaw) {
                 sloc += "; " + minYaw + "-" + maxYaw;
             }
@@ -472,10 +472,19 @@ public class Portal implements ConfigurationSerializable
         this.maxCorner = maxCorner;
     }
 
+    public void move(Vector offset) {
+        this.minCorner.add(offset);
+        this.maxCorner.add(offset);
+    }
+    
     public String getName() {
         return name;
     }
 
+    public void setName(String name) { // should not be changed for registered portals!
+        this.name = name;
+    }
+    
     public Vector getMinCorner() {
         return minCorner;
     }
@@ -488,6 +497,10 @@ public class Portal implements ConfigurationSerializable
         return world;
     }
 
+    public void setWorld(UUID world) {
+        this.world = world;
+    }
+    
     public void setActive(boolean active) {
     }
 
