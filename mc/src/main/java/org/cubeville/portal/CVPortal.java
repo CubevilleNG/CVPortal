@@ -101,6 +101,7 @@ public class CVPortal extends JavaPlugin {
         commandParser.addCommand(new PortalSetCrossServerTeleport());
         commandParser.addCommand(new PortalSetDeathTriggered());
         commandParser.addCommand(new PortalSetGameMode());
+        commandParser.addCommand(new PortalSetGlobalCooldown());
         commandParser.addCommand(new PortalSetLoginTriggered());
         commandParser.addCommand(new PortalSetKeepInventory());
         commandParser.addCommand(new PortalSetMessage());
