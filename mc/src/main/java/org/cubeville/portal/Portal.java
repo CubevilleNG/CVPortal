@@ -213,7 +213,7 @@ public class Portal implements ConfigurationSerializable
         }
     }
     
-    public void triggerRandom(Collection<Player> players, int count) {
+    public void triggerRandom(Collection<Player> players, int count, boolean forcecount) {
         List<Player> playersInPortal = new ArrayList<>();
         for(Player player: players) {
             if(isPlayerInPortal(player) && playerHasPermission(player) && conditionIsTrue(player)) {
@@ -221,6 +221,8 @@ public class Portal implements ConfigurationSerializable
             }
         }
         
+        if(forcecount == true && playersInPortal.size() != count) return;
+
         while(playersInPortal.size() > 0 && count > 0) {
             int i = random.nextInt(playersInPortal.size());
             executeActions(playersInPortal.remove(i));

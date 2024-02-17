@@ -27,7 +27,8 @@ public class PortalTrigger extends BaseCommand
 
         addFlag("random");
         addParameter("count", true, new CommandParameterInteger());
-
+        addFlag("forcecount");
+        
         addParameter("player", true, new CommandParameterString());
         addFlag("force");
 
@@ -63,7 +64,8 @@ public class PortalTrigger extends BaseCommand
 
         if(flags.contains("force") && parameters.get("player") == null) throw new CommandExecutionException("&cforce can only be used with the player paramtere!");
         if(parameters.containsKey("count") && flags.contains("random") == false) throw new CommandExecutionException("&ccount can only be used with random!");
-
+        if(flags.contains("forcecount") && parameters.get("count") == null) throw new CommandExecutionException("&cforcecount can only be used with count!");
+        
         if(flags.contains("limit") && (!parameters.containsKey("player"))) throw new CommandExecutionException("&climit can only be used with the player-parameter");
         if(flags.contains("limit") && (!flags.contains("search"))) throw new CommandExecutionException("&climit can only be used with the search flag");
         if(flags.contains("limit") && flags.contains("force")) throw new CommandExecutionException("&climit can't be used with the force flag");
@@ -78,7 +80,7 @@ public class PortalTrigger extends BaseCommand
             int count = 1;
             if(parameters.containsKey("count")) count = (Integer) parameters.get("count");
             for(Portal portal: portals) {
-                portal.triggerRandom(players, count);
+                portal.triggerRandom(players, count, flags.contains("forcecount"));
             }
         }
         else if(parameters.containsKey("player")) {
