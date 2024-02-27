@@ -12,6 +12,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import org.cubeville.commons.commands.CommandParser;
+import org.cubeville.cvtools.CVTools;
 
 import org.cubeville.cvipc.CVIPC;
 
@@ -85,6 +86,8 @@ public class CVPortal extends JavaPlugin {
         commandParser.addCommand(new PortalFind());
         commandParser.addCommand(new PortalInfo());
         commandParser.addCommand(new PortalList());
+        commandParser.addCommand(new PortalListYML());
+        commandParser.addCommand(new PortalListEnumsYML());
         commandParser.addCommand(new PortalLoad());
         commandParser.addCommand(new PortalLoginTarget(loginTeleporter));
         commandParser.addCommand(new PortalRedefine());
@@ -93,6 +96,7 @@ public class CVPortal extends JavaPlugin {
         commandParser.addCommand(new PortalSelect());
         commandParser.addCommand(new PortalSendMessage());
         commandParser.addCommand(new PortalSendTitle());
+        commandParser.addCommand(new PortalSerializeYML());
         commandParser.addCommand(new PortalSet());
         commandParser.addCommand(new PortalSetBringHorses());
         commandParser.addCommand(new PortalSetCmd());
@@ -128,8 +132,13 @@ public class CVPortal extends JavaPlugin {
         commandParser.addCommand(new PortalRemoveAction("remove sound", "Playsound"));
         commandParser.addCommand(new PortalRemoveAction("remove sucommand", "SuCmd"));
         commandParser.addCommand(new PortalRemoveAction("remove teleport", "Teleport"));
+        commandParser.addCommand(new PortalRemoveAction("remove spreadteleport", "SpreadTeleport"));
         commandParser.addCommand(new PortalRemoveAction("remove title", "Title"));
         commandParser.addCommand(new PortalUnsetParticle());
+        try {
+            CVTools.getInstance().registerCommandParser("cvportal", "cvportal.admin", commandParser);
+        }
+        catch(java.lang.NoSuchMethodError e) {}
         
         tpposCommandParser = new CommandParser();
         tpposCommandParser.addCommand(new Tppos());
