@@ -26,7 +26,7 @@ public class PortalUnsetParticle extends BaseCommand
         throws CommandExecutionException {
 
         Portal portal = (Portal) baseParameters.get(0);
-        portal.setParticle(null, 0);
+        portal.setParticle(null, 0, 0.0f, 0, 0, 0);
         PortalManager.getInstance().save();
 
         if(flags.contains("silent"))

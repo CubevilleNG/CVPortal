@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+import org.bukkit.Color;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -41,7 +42,11 @@ public class Portal implements ConfigurationSerializable
     private boolean jumpEventTriggered;
     private Particle particle;
     private int particleDelay;
-
+    private float particleSize;
+    private int particleRed;
+    private int particleGreen;
+    private int particleBlue;
+    
     private boolean disabled = false;
     
     private int particleDelayCounter;
@@ -72,6 +77,10 @@ public class Portal implements ConfigurationSerializable
 	this.jumpEventTriggered = false;
         this.particle = null;
         this.particleDelay = 0;
+        this.particleSize = 0.0f;
+        this.particleRed = 255;
+        this.particleGreen = 255;
+        this.particleBlue = 255;
         actions = new ArrayList<>();
     }
 
@@ -129,6 +138,18 @@ public class Portal implements ConfigurationSerializable
 
         if(config.get("particleDelay") == null) particleDelay = 0;
         else particleDelay = (int) config.get("particleDelay");
+
+        if(config.get("particleSize") == null) particleSize = 1.0f;
+        else particleSize = ((Double) config.get("particleSize")).floatValue();
+
+        if(config.get("particleRed") == null) particleRed = 0;
+        else particleRed = (int) config.get("particleRed");
+
+        if(config.get("particleGreen") == null) particleGreen = 0;
+        else particleGreen = (int) config.get("particleGreen");
+
+        if(config.get("particleBlue") == null) particleBlue = 0;
+        else particleBlue = (int) config.get("particleBlue");
     }
 
     public Map<String, Object> serialize() {
@@ -153,6 +174,10 @@ public class Portal implements ConfigurationSerializable
         if(particle != null) {
             ret.put("particle", particle.toString());
             ret.put("particleDelay", particleDelay);
+            ret.put("particleSize", particleSize);
+            ret.put("particleRed", particleRed);
+            ret.put("particleGreen", particleGreen);
+            ret.put("particleBlue", particleBlue);
         }
         return ret;
     }
@@ -171,7 +196,13 @@ public class Portal implements ConfigurationSerializable
             double x = minCorner.getX() + (maxCorner.getX() - minCorner.getX()) * rndx;
             double y = minCorner.getY() + (maxCorner.getY() - minCorner.getY()) * rndy;
             double z = minCorner.getZ() + (maxCorner.getZ() - minCorner.getZ()) * rndz;
-            Bukkit.getServer().getWorld(world).spawnParticle(particle, x, y, z, 1, 0, 0, 0, 0.0);
+            if(particle == Particle.REDSTONE) {
+                Particle.DustOptions dustoptions = new Particle.DustOptions(Color.fromRGB(particleRed, particleGreen, particleBlue), particleSize);
+                Bukkit.getServer().getWorld(world).spawnParticle(particle, x, y, z, 1, 0, 0, 0, dustoptions);
+            }
+            else {
+                Bukkit.getServer().getWorld(world).spawnParticle(particle, x, y, z, 1, 0, 0, 0, 0.0);
+            }
         }
     }
     
@@ -583,9 +614,13 @@ public class Portal implements ConfigurationSerializable
         this.maxYaw = maxYaw;
     }
 
-    public void setParticle(Particle particle, int particleDelay) {
+    public void setParticle(Particle particle, int particleDelay, float particleSize, int particleRed, int particleGreen, int particleBlue) {
         this.particle = particle;
         this.particleDelay = particleDelay;
+        this.particleSize = particleSize;
+        this.particleRed = particleRed;
+        this.particleGreen = particleGreen;
+        this.particleBlue = particleBlue;
     }
 
     public boolean isDisabled() {
