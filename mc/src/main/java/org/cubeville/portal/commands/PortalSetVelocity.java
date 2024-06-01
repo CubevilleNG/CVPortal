@@ -24,6 +24,7 @@ public class PortalSetVelocity extends Command
         addBaseParameter(new CommandParameterPortal());
         addBaseParameter(new CommandParameterVector());
         addFlag("adjusttoplayerdirection");
+        addFlag("adjusttopitch");
 	addFlag("ignorey");
     }
 
@@ -34,8 +35,9 @@ public class PortalSetVelocity extends Command
 
         Vector velocity = (Vector) baseParameters.get(1);
         boolean adjustToPlayerDirection = flags.contains("adjusttoplayerdirection");
+        boolean adjustToPitch = flags.contains("adjusttopitch");
 	boolean ignoreY = flags.contains("ignorey");
-        portal.addAction(new Velocity(velocity, adjustToPlayerDirection, ignoreY));
+        portal.addAction(new Velocity(velocity, adjustToPlayerDirection, adjustToPitch, ignoreY));
         PortalManager.getInstance().save();
 
         return new CommandResponse("&aVelocity set.");

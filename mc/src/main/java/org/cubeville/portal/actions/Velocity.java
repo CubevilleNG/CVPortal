@@ -12,6 +12,7 @@ import org.bukkit.util.Vector;
 public class Velocity implements Action
 {
     boolean adjustToPlayerDirection;
+    boolean adjustToPitch;
     Vector velocity;
     boolean ignoreY;
     
@@ -20,26 +21,29 @@ public class Velocity implements Action
         adjustToPlayerDirection = false;
     }
 
-    public Velocity(Vector velocity, boolean adjustToPlayerDirection, boolean ignoreY) {
+    public Velocity(Vector velocity, boolean adjustToPlayerDirection, boolean adjustToPitch, boolean ignoreY) {
         this.velocity = velocity;
         this.adjustToPlayerDirection = adjustToPlayerDirection;
+        this.adjustToPitch = adjustToPitch;
 	this.ignoreY = ignoreY;
     }
     
     public Velocity(Map<String, Object> config) {
         velocity = (Vector) config.get("velocity");
-        if(config.get("adjustToPlayerDirection") != null) {
+        if(config.get("adjustToPlayerDirection") != null)
             adjustToPlayerDirection = (Boolean) config.get("adjustToPlayerDirection");
-        }
-        else {
+        else
             adjustToPlayerDirection = false;
-        }
-	if(config.get("ignoreY") != null) {
+
+        if(config.get("ignoreY") != null)
 	    ignoreY = (Boolean) config.get("ignoreY");
-	}
-	else {
+	else
 	    ignoreY = false;
-	}
+
+        if(config.get("adjustToPitch") != null)
+            adjustToPitch = (Boolean) config.get("adjustToPitch");
+        else
+            adjustToPitch = false;
     }
 
     public Map<String, Object> serialize() {
@@ -47,19 +51,26 @@ public class Velocity implements Action
         ret.put("velocity", velocity);
         ret.put("adjustToPlayerDirection", adjustToPlayerDirection);
 	ret.put("ignoreY", ignoreY);
+        ret.put("adjustToPitch", adjustToPitch);
         return ret;
     }
 
     public void execute(Player player) {
-        if(!adjustToPlayerDirection) {
+        if(! adjustToPlayerDirection) {
 	    Vector newVelocity = velocity;
 	    if(ignoreY) newVelocity.setY(player.getVelocity().getY());
             player.setVelocity(newVelocity);
         }
         else {
             Vector pl = player.getLocation().getDirection();
-            Vector vel = new Vector(pl.getX() * velocity.getX(), velocity.getY(), pl.getZ() * velocity.getX());
-	    if(ignoreY) vel.setY(player.getVelocity().getY());
+            Vector vel;
+            if(adjustToPitch) {
+                vel = pl.multiply(velocity.getX());
+            }
+            else {
+                vel = new Vector(pl.getX() * velocity.getX(), velocity.getY(), pl.getZ() * velocity.getX());
+                if(ignoreY) vel.setY(player.getVelocity().getY());
+            }
             player.setVelocity(vel);
         }
     }
